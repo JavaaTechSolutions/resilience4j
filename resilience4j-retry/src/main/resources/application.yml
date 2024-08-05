@@ -1,0 +1,31 @@
+management:
+  endpoints:
+    web:
+      exposure:
+        include: "*"
+
+resilience4j.retry:
+  instances:
+    simpleRetry:
+      maxAttempts: 3
+      waitDuration: 5s
+    retryOnException:
+      maxAttempts: 4
+      waitDuration: 3s
+      retryExceptions:
+        - org.springframework.web.client.ResourceAccessException
+      ignoreExceptions:
+        - com.jts.retry.OrderNotFoundException  
+    retryBasedOnConditionalPredicate:
+      maxAttempts: 2
+      waitDuration: 2s
+      resultPredicate: com.jts.retry.predicate.ConditionPredicate
+    retryBasedOnExceptionPredicate:
+      maxAttempts: 2
+      waitDuration: 2s
+      retryExceptionPredicate: com.jts.retry.predicate.ExceptionPredicate
+    retryUsingExponentialBackoff:  
+      maxAttempts: 3
+      waitDuration: 2s
+      enableExponentialBackoff: true
+      exponentialBackoffMultiplier: 2
